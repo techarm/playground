@@ -2,6 +2,7 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const db = require('./db');
 
 const productRoutes = require('./routes/products');
 const authRoutes = require('./routes/auth');
@@ -25,4 +26,10 @@ app.use((req, res, next) => {
 app.use('/products', productRoutes);
 app.use('/', authRoutes);
 
-app.listen(3100);
+db.initDB((err, db) => {
+  if (err) {
+    console.log(err);
+  } else {
+    app.listen(3100);
+  }
+});
