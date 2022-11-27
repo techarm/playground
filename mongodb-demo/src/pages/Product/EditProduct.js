@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import './EditProduct.css';
@@ -6,7 +7,8 @@ import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 
 const ProductEditPage = (props) => {
-  const { mode, id: productId } = props.match.params;
+  const params = useParams();
+  const { mode, id: productId } = params;
 
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({

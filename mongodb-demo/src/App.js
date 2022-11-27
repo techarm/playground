@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
 
 import Header from './components/Header/Header';
@@ -56,50 +56,50 @@ const App = () => {
   };
 
   let routes = (
-    <Switch>
-      <Redirect from="/" to="/products" exact />
-      <Redirect from="/auth" to="/products" exact />
-      <Redirect from="/signup" to="/products" exact />
+    <Routes>
+      <Route path="/" element={<Navigate replace to="/products" />} exact />
+      <Route path="/auth" element={<Navigate replace to="/products" />} exact />
+      <Route
+        path="/signup"
+        element={<Navigate replace to="/products" />}
+        exact
+      />
       <Route
         path="/product/:mode"
-        render={(props) => (
-          <EditProductPage {...props} onError={errorHandler} />
-        )}
+        element={<EditProductPage onError={errorHandler} />}
       />
       <Route
         path="/products/:id/:mode"
-        render={(props) => (
-          <EditProductPage {...props} onError={errorHandler} />
-        )}
+        element={<EditProductPage onError={errorHandler} />}
       />
       <Route
         path="/products/:id"
-        render={(props) => <ProductPage {...props} onError={errorHandler} />}
+        element={<ProductPage onError={errorHandler} />}
       />
       <Route
         path="/products"
-        render={(props) => <ProductsPage {...props} onError={errorHandler} />}
+        element={<ProductsPage onError={errorHandler} />}
       />
-    </Switch>
+    </Routes>
   );
 
   if (!isAuth) {
     routes = (
-      <Switch>
-        <Redirect from="/" to="/auth" exact />
-        <Redirect from="/products" to="/auth" />
-        <Redirect from="/product" to="/auth" />
+      <Routes>
+        <Route path="/" element={<Navigate to="/auth" />} exact />
+        <Route path="/products" element={<Navigate to="/auth" />} />
+        <Route path="/product" element={<Navigate to="/auth" />} />
         <Route
           path="/auth"
-          render={() => (
+          element={
             <AuthPage
               mode={authMode}
               onAuth={authHandler}
               onAuthModeChange={authModeChangedHandler}
             />
-          )}
+          }
         />
-      </Switch>
+      </Routes>
     );
   }
 

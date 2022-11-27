@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import './Product.css';
 
-const ProductPage = ({ match, onError }) => {
-  const productId = match.params.id;
+const ProductPage = ({ onError }) => {
+  const params = useParams();
+
+  const productId = params.id;
   const [isLoading, setIsLoading] = useState(true);
   const [product, setProduct] = useState(null);
 

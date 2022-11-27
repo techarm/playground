@@ -11,22 +11,17 @@ const router = Router();
 router.get('/', (req, res, next) => {
   // Return a list of dummy products
   // Later, this data will be fetched from MongoDB
-  // const queryPage = req.query.page;
-  // const pageSize = 5;
-  // let resultProducts = [...products];
-  // if (queryPage) {
-  //   resultProducts = products.slice(
-  //     (queryPage - 1) * pageSize,
-  //     queryPage * pageSize
-  //   );
-  // }
-
+  const queryPage = req.query.page;
+  const pageSize = 10;
   const products = [];
 
   db.getClient()
     .db()
     .collection('products')
     .find()
+    .sort({ price: -1 })
+    .skip((queryPage - 1) * pageSize)
+    .limit(pageSize)
     .forEach((product) => {
       product.price = product.price.toString();
       products.push(product);

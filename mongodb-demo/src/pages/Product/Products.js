@@ -1,15 +1,18 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 
 import Products from '../../components/Products/Products';
 
 const ProductsPage = ({ onError }) => {
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get('page') || '1';
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState([]);
 
   const fetchData = useCallback(() => {
     axios
-      .get('http://localhost:3100/products?page=1')
+      .get('http://localhost:3100/products?page=' + page)
       .then((productsResponse) => {
         setIsLoading(false);
         setProducts(productsResponse.data);
