@@ -1,123 +1,127 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import './EditProduct.css';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 
-class ProductEditPage extends Component {
-  state = {
-    isLoading: true,
+const ProductEditPage = (props) => {
+  const { mode, id: productId } = props.match.params;
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [formData, setFormData] = useState({
     title: '',
     price: '',
     imageUrl: '',
-    description: ''
-  };
+    description: '',
+  });
 
-  componentDidMount() {
+  useEffect(() => {
     // Will be "edit" or "add"
-    if (this.props.match.params.mode === 'edit') {
+    if (mode === 'edit') {
       axios
-        .get('http://localhost:3100/products/' + this.props.match.params.id)
-        .then(productResponse => {
+        .get('http://localhost:3100/products/' + productId)
+        .then((productResponse) => {
           const product = productResponse.data;
-          this.setState({
-            isLoading: false,
+          setFormData({
             title: product.name,
             price: product.price.toString(),
             imageUrl: product.image,
-            description: product.description
+            description: product.description,
           });
+          setIsLoading(false);
         })
-        .catch(err => {
-          this.setState({ isLoading: false });
+        .catch((err) => {
+          setIsLoading(false);
           console.log(err);
         });
     } else {
-      this.setState({ isLoading: false });
+      setIsLoading(false);
     }
-  }
+  }, [mode, productId]);
 
-  editProductHandler = event => {
+  const editProductHandler = (event) => {
     event.preventDefault();
     if (
-      this.state.title.trim() === '' ||
-      this.state.price.trim() === '' ||
-      this.state.imageUrl.trim() === '' ||
-      this.state.description.trim() === ''
+      formData.title.trim() === '' ||
+      formData.price.trim() === '' ||
+      formData.imageUrl.trim() === '' ||
+      formData.description.trim() === ''
     ) {
       return;
     }
-    this.setState({ isLoading: true });
+
+    setIsLoading(false);
     const productData = {
-      name: this.state.title,
-      price: parseFloat(this.state.price),
-      image: this.state.imageUrl,
-      description: this.state.description
+      name: formData.title,
+      price: parseFloat(formData.price),
+      image: formData.imageUrl,
+      description: formData.description,
     };
+
     let request;
-    if (this.props.match.params.mode === 'edit') {
+    if (mode === 'edit') {
       request = axios.patch(
-        'http://localhost:3100/products/' + this.props.match.params.id,
+        'http://localhost:3100/products/' + productId,
         productData
       );
     } else {
       request = axios.post('http://localhost:3100/products', productData);
     }
+
     request
-      .then(result => {
-        this.setState({ isLoading: false });
-        this.props.history.replace('/products');
+      .then((result) => {
+        setIsLoading(false);
+        props.history.replace('/products');
       })
-      .catch(err => {
-        this.setState({ isLoading: false });
+      .catch((err) => {
+        setIsLoading(false);
         console.log(err);
-        this.props.onError(
+        props.onError(
           'Editing or adding the product failed. Please try again later'
         );
       });
   };
 
-  inputChangeHandler = (event, input) => {
-    this.setState({ [input]: event.target.value });
+  const inputChangeHandler = (event, input) => {
+    setFormData((preState) => {
+      return { ...preState, [input]: event.target.value };
+    });
   };
 
-  render() {
-    let content = (
-      <form className="edit-product__form" onSubmit={this.editProductHandler}>
-        <Input
-          label="Title"
-          config={{ type: 'text', value: this.state.title }}
-          onChange={event => this.inputChangeHandler(event, 'title')}
-        />
-        <Input
-          label="Price"
-          config={{ type: 'number', value: this.state.price }}
-          onChange={event => this.inputChangeHandler(event, 'price')}
-        />
-        <Input
-          label="Image URL"
-          config={{ type: 'text', value: this.state.imageUrl }}
-          onChange={event => this.inputChangeHandler(event, 'imageUrl')}
-        />
-        <Input
-          label="Description"
-          elType="textarea"
-          config={{ rows: '5', value: this.state.description }}
-          onChange={event => this.inputChangeHandler(event, 'description')}
-        />
-        <Button type="submit">
-          {this.props.match.params.mode === 'add'
-            ? 'Create Product'
-            : 'Update Product'}
-        </Button>
-      </form>
-    );
-    if (this.state.isLoading) {
-      content = <p>Is loading...</p>;
-    }
-    return <main>{content}</main>;
+  let content = (
+    <form className="edit-product__form" onSubmit={editProductHandler}>
+      <Input
+        label="Title"
+        config={{ type: 'text', value: formData.title }}
+        onChange={(event) => inputChangeHandler(event, 'title')}
+      />
+      <Input
+        label="Price"
+        config={{ type: 'number', value: formData.price }}
+        onChange={(event) => inputChangeHandler(event, 'price')}
+      />
+      <Input
+        label="Image URL"
+        config={{ type: 'text', value: formData.imageUrl }}
+        onChange={(event) => inputChangeHandler(event, 'imageUrl')}
+      />
+      <Input
+        label="Description"
+        elType="textarea"
+        config={{ rows: '5', value: formData.description }}
+        onChange={(event) => inputChangeHandler(event, 'description')}
+      />
+      <Button type="submit">
+        {mode === 'add' ? 'Create Product' : 'Update Product'}
+      </Button>
+    </form>
+  );
+  if (isLoading) {
+    content = <p>Is loading...</p>;
   }
-}
+
+  return <main>{content}</main>;
+};
 
 export default ProductEditPage;

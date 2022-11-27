@@ -1,51 +1,51 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import './Product.css';
 
-class ProductPage extends Component {
-  state = { isLoading: true, product: null };
+const ProductPage = ({ match, onError }) => {
+  const productId = match.params.id;
+  const [isLoading, setIsLoading] = useState(true);
+  const [product, setProduct] = useState(null);
 
-  componentDidMount() {
+  useEffect(() => {
     axios
-      .get('http://localhost:3100/products/' + this.props.match.params.id)
-      .then(productResponse => {
-        this.setState({ isLoading: false, product: productResponse.data });
+      .get('http://localhost:3100/products/' + productId)
+      .then((productResponse) => {
+        setIsLoading(false);
+        setProduct(productResponse.data);
       })
-      .catch(err => {
-        this.setState({ isLoading: false });
+      .catch((err) => {
+        setIsLoading(false);
         console.log(err);
-        this.props.onError('Loading the product failed. Please try again later');
+        onError('Loading the product failed. Please try again later');
       });
-  }
+  }, [productId]);
 
-  render() {
-    let content = <p>Is loading...</p>;
-
-    if (!this.state.isLoading && this.state.product) {
-      content = (
-        <main className="product-page">
-          <h1>{this.state.product.name}</h1>
-          <h2>{this.state.product.price}</h2>
-          <div
-            className="product-page__image"
-            style={{
-              backgroundImage: "url('" + this.state.product.image + "')"
-            }}
-          />
-          <p>{this.state.product.description}</p>
-        </main>
-      );
-    }
-    if (!this.state.isLoading && !this.state.product) {
-      content = (
-        <main>
-          <p>Found no product. Try again later.</p>
-        </main>
-      );
-    }
-    return content;
+  let content = <p>Is loading...</p>;
+  if (!isLoading && product) {
+    content = (
+      <main className="product-page">
+        <h1>{product.name}</h1>
+        <h2>{product.price}</h2>
+        <div
+          className="product-page__image"
+          style={{
+            backgroundImage: "url('" + product.image + "')",
+          }}
+        />
+        <p>{product.description}</p>
+      </main>
+    );
   }
-}
+  if (!isLoading && !product) {
+    content = (
+      <main>
+        <p>Found no product. Try again later.</p>
+      </main>
+    );
+  }
+  return content;
+};
 
 export default ProductPage;
