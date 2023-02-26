@@ -1136,7 +1136,17 @@
       });
 
       // Generate sample data to use within a candlestick series
-      const candleStickData = generateCandlestickData();
+      // const candleStickData = generateCandlestickData();
+      const candleStickData = generateCandlestickData().map((datapoint) => {
+        // map function is changing the color for the individual
+        // candlestick points that close above 205
+        if (datapoint.close < 205) {
+          return datapoint;
+        }
+        // we are adding 'color' and 'wickColor' properties to the datapoint.
+        // Using spread syntax: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals
+        return { ...datapoint, color: 'orange', wickColor: 'orange' };
+      });
 
       // const lineSeries = chart.addLineSeries({
       //   color: '#2962FF',
