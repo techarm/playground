@@ -1104,7 +1104,7 @@
       // Create a number format using Intl.NumberFormat
       const myPriceFormatter = Intl.NumberFormat(currentLocale, {
         style: 'currency',
-        currency: 'JPY', // Currency for data points
+        currency: 'USD', // Currency for data points
       }).format;
 
       // Apply the custom priceFormatter to the chart
@@ -1123,6 +1123,15 @@
 
       // Create the Main Series (Candlesticks)
       const mainSeries = chart.addCandlestickSeries();
+
+      // Adjust the options for the priceScale of the mainSeries
+      mainSeries.priceScale().applyOptions({
+        autoScale: false, // disables auto scaling based on visible content
+        scaleMargins: {
+          top: 0.1,
+          bottom: 0.2,
+        },
+      });
 
       // Set the data for the Main Series
       mainSeries.setData(candleStickData);
