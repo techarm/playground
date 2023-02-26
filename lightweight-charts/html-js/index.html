@@ -1142,6 +1142,25 @@
       //   color: '#2962FF',
       // });
 
+      // Convert the candlestick data for use with a line series
+      const lineData = candleStickData.map((datapoint) => ({
+        time: datapoint.time,
+        value: (datapoint.close + datapoint.open) / 2,
+      }));
+
+      // Add an area series to the chart,
+      // Adding this before we add the candlestick chart
+      // so that it will appear beneath the candlesticks
+      const areaSeries = chart.addAreaSeries({
+        lastValueVisible: false, // hide the last value marker for this series
+        crosshairMarkerVisible: false, // hide the crosshair marker for this series
+        lineColor: 'transparent', // hide the line
+        topColor: 'rgba(56, 33, 110,0.6)',
+        bottomColor: 'rgba(56, 33, 110, 0.1)',
+      });
+      // Set the data for the Area Series
+      areaSeries.setData(lineData);
+
       // Create the Main Series (Candlesticks)
       const mainSeries = chart.addCandlestickSeries();
 
