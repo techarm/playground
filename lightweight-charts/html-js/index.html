@@ -1099,12 +1099,27 @@
         borderColor: '#71649C',
       });
 
+      // Get the current users primary locale
+      const currentLocale = window.navigator.languages[0];
+      // Create a number format using Intl.NumberFormat
+      const myPriceFormatter = Intl.NumberFormat(currentLocale, {
+        style: 'currency',
+        currency: 'JPY', // Currency for data points
+      }).format;
+
+      // Apply the custom priceFormatter to the chart
+      chart.applyOptions({
+        localization: {
+          priceFormatter: myPriceFormatter,
+        },
+      });
+
       // Generate sample data to use within a candlestick series
       const candleStickData = generateCandlestickData();
 
-      const lineSeries = chart.addLineSeries({
-        color: '#2962FF',
-      });
+      // const lineSeries = chart.addLineSeries({
+      //   color: '#2962FF',
+      // });
 
       // Create the Main Series (Candlesticks)
       const mainSeries = chart.addCandlestickSeries();
