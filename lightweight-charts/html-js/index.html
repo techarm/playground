@@ -1079,6 +1079,7 @@
         {
           layout: {
             background: { color: '#222' },
+            // textColor: '#C3BCDB',
             textColor: '#DDD',
           },
           grid: {
@@ -1107,8 +1108,18 @@
 
       // Create the Main Series (Candlesticks)
       const mainSeries = chart.addCandlestickSeries();
+
       // Set the data for the Main Series
       mainSeries.setData(candleStickData);
+
+      // Changing the Candlestick colors
+      mainSeries.applyOptions({
+        wickUpColor: 'rgb(54, 116, 217)',
+        upColor: 'rgb(54, 116, 217)',
+        wickDownColor: 'rgb(225, 50, 85)',
+        downColor: 'rgb(225, 50, 85)',
+        borderVisible: false,
+      });
 
       // Adding a window resize event handler to resize the chart when
       // the window size changes.
