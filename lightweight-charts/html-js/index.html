@@ -1298,6 +1298,7 @@
         {
           layout: {
             background: { color: '#222' },
+            // background: { type: 'solid', color: 'transparent' },
             // textColor: '#C3BCDB',
             textColor: '#DDD',
             fontFamily: "'Roboto', sans-serif",
@@ -1305,6 +1306,14 @@
           grid: {
             vertLines: { color: '#444' },
             horzLines: { color: '#444' },
+          },
+          watermark: {
+            visible: true,
+            fontSize: 64,
+            horzAlign: 'center',
+            vertAlign: 'center',
+            color: 'rgba(255, 255, 255, 0.06)',
+            text: 'TradingView',
           },
         }
       );
