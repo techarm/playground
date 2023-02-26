@@ -1114,6 +1114,25 @@
         localization: {
           priceFormatter: myPriceFormatter,
         },
+        crosshair: {
+          // Change mode from default 'magnet' to 'normal'.
+          // Allows the crosshair to move freely without snapping to datapoints
+          mode: LightweightCharts.CrosshairMode.Normal,
+
+          // Vertical crosshair line (showing Date in Label)
+          vertLine: {
+            width: 8,
+            color: '#C3BCDB44',
+            style: LightweightCharts.LineStyle.Solid,
+            labelBackgroundColor: '#9B7DFF',
+          },
+
+          // Horizontal crosshair line (showing Price in Label)
+          horzLine: {
+            color: '#9B7DFF',
+            labelBackgroundColor: '#9B7DFF',
+          },
+        },
       });
 
       // Generate sample data to use within a candlestick series
