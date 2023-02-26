@@ -24,8 +24,8 @@
       /* Styles for attribution message */
       .lw-attribution {
         position: absolute;
-        left: 0px;
-        top: 0px;
+        right: 75px;
+        bottom: 35px;
         z-index: 3; /* place above the charts */
         padding: 10px 0px 0px 12px;
         font-family: 'Roboto', sans-serif;
@@ -33,8 +33,8 @@
       }
       .lw-attribution a {
         cursor: pointer;
-        color: rgb(54, 116, 217);
-        opacity: 0.8;
+        color: white;
+        opacity: 0.65;
       }
       .lw-attribution a:hover {
         color: rgb(54, 116, 217);
@@ -1105,6 +1105,31 @@
         ];
       }
 
+      function createLegends(chart) {
+        const symbolName = 'ETC USD 7D VWAP';
+
+        const container = document.getElementById('container');
+
+        const legend = document.createElement('div');
+        legend.style = `position: absolute; left: 12px; top: 12px; z-index: 1; font-size: 14px; font-family: sans-serif; line-height: 18px; font-weight: 300;`;
+        container.appendChild(legend);
+
+        const firstRow = document.createElement('div');
+        firstRow.innerHTML = symbolName;
+        firstRow.style.color = 'rgb(255, 255, 255, 0.6)';
+        legend.appendChild(firstRow);
+
+        chart.subscribeCrosshairMove((param) => {
+          let priceFormatted = '';
+          if (param.time) {
+            const data = param.seriesData.get(areaSeries);
+            const price = data.value !== undefined ? data.value : data.close;
+            priceFormatted = price.toFixed(2);
+          }
+          firstRow.innerHTML = `${symbolName} <strong>${priceFormatted}</strong>`;
+        });
+      }
+
       // Create the Lightweight Chart within the container element
       const chart = LightweightCharts.createChart(
         document.getElementById('container'),
@@ -1125,6 +1150,7 @@
       // Setting the border color for the vertical axis
       chart.priceScale().applyOptions({
         borderColor: '#71649C',
+        // invertScale: true,
       });
 
       chart.timeScale().applyOptions({
@@ -1132,6 +1158,7 @@
         barSpacing: 10, // Adjust the starting bar width (essentially the horizontal zoom)
       });
 
+      createLegends(chart);
       // chart.timeScale().fitContent();
 
       // Get the current users primary locale
