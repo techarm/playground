@@ -1415,6 +1415,11 @@
         wickDownColor: 'rgb(225, 50, 85)',
         downColor: 'rgb(225, 50, 85)',
         borderVisible: false,
+
+        lineWidth: 2,
+        // disabling built-in price lines
+        lastValueVisible: false,
+        priceLineVisible: false,
       });
 
       // Add VOLUME Series
@@ -1439,6 +1444,51 @@
       });
       const volumeData = generateVolumeData();
       volumeSeries.setData(volumeData);
+
+      // PRICE Lines
+      let minimumPrice = candleStickData[0].close;
+      let maximumPrice = minimumPrice;
+      for (let i = 1; i < candleStickData.length; i++) {
+        const price = candleStickData[i].close;
+        if (price > maximumPrice) {
+          maximumPrice = price;
+        }
+        if (price < minimumPrice) {
+          minimumPrice = price;
+        }
+      }
+      // const avgPrice = (maximumPrice + minimumPrice) / 2;
+      const lineWidth = 1;
+      const minPriceLine = {
+        price: minimumPrice,
+        color: '#ef5350',
+        lineWidth: lineWidth,
+        lineStyle: 2, // LineStyle.Dashed
+        axisLabelVisible: true,
+        title: 'min price',
+      };
+      // const avgPriceLine = {
+      //   price: avgPrice,
+      //   // color: 'yellow',
+      //   lineWidth: lineWidth,
+      //   lineStyle: 1, // LineStyle.Dotted
+      //   axisLabelVisible: true,
+      //   title: 'ave price',
+      // };
+      const maxPriceLine = {
+        price: maximumPrice,
+        color: '#26a69a',
+        lineWidth: lineWidth,
+        lineStyle: 2, // LineStyle.Dashed
+        axisLabelVisible: true,
+        title: 'max price',
+      };
+
+      mainSeries.createPriceLine(minPriceLine);
+      // mainSeries.createPriceLine(avgPriceLine);
+      mainSeries.createPriceLine(maxPriceLine);
+
+      chart.timeScale().fitContent();
 
       // Adding a window resize event handler to resize the chart when
       // the window size changes.
