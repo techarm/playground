@@ -9,6 +9,8 @@
       body {
         padding: 0;
         margin: 0;
+        /* Add a background color to match the chart */
+        background-color: #222;
       }
     </style>
     <!-- Adding the standalone version of Lightweight charts -->
@@ -1073,11 +1075,35 @@
 
       // Create the Lightweight Chart within the container element
       const chart = LightweightCharts.createChart(
-        document.getElementById('container')
+        document.getElementById('container'),
+        {
+          layout: {
+            background: { color: '#222' },
+            textColor: '#DDD',
+          },
+          grid: {
+            vertLines: { color: '#444' },
+            horzLines: { color: '#444' },
+          },
+        }
       );
+
+      // Setting the border color for the vertical axis
+      chart.priceScale().applyOptions({
+        borderColor: '#71649C',
+      });
+
+      // Setting the border color for the horizontal axis
+      chart.timeScale().applyOptions({
+        borderColor: '#71649C',
+      });
 
       // Generate sample data to use within a candlestick series
       const candleStickData = generateCandlestickData();
+
+      const lineSeries = chart.addLineSeries({
+        color: '#2962FF',
+      });
 
       // Create the Main Series (Candlesticks)
       const mainSeries = chart.addCandlestickSeries();
